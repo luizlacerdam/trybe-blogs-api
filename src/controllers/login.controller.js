@@ -11,13 +11,13 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!isBodyValid(email, password)) {
-      return res.status(401).json({ message: 'É necessário email e senha para fazer login' });
+      return res.status(400).json({ message: 'Some required fields are missing' });
     }
   
     const user = await UserService.getByEmail(email);
   
     if (!user || user.password !== password) {
-      return res.status(401).json({ message: 'Usuário não existe ou senha inválida' }); 
+      return res.status(400).json({ message: 'Invalid fields' }); 
     }
 
     const jwtConfig = {
