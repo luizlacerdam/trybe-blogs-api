@@ -18,10 +18,18 @@ module.exports = {
         type: Sequelize.STRING,
       },
       userId: {
-        type: Sequelize.STRING,
-        field: 'user_Id'
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        field: 'user_Id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        references: {
+          model: 'users',
+          key: 'id',
+        }
       },
       published: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
       updated: {
