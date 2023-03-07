@@ -6,7 +6,7 @@ const secret = process.env.JWT_SECRET;
 
 const isBodyValid = (email, password) => email && password;
 
-module.exports = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
       return res.status(401).json({ message: 'É necessário email e senha para fazer login' });
     }
   
-    const user = await UserService.getByUsername(email);
+    const user = await UserService.getByEmail(email);
   
     if (!user || user.password !== password) {
       return res.status(401).json({ message: 'Usuário não existe ou senha inválida' }); 
@@ -31,4 +31,8 @@ module.exports = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: 'Erro interno', error: err.message });
   }
+};
+
+module.exports = {
+    login,
 };
