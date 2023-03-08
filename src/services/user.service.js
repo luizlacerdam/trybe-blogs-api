@@ -10,7 +10,13 @@ const createUser = async (newUser) => {
     // console.log({ id: userCreated.id, ...newUser });
     return { type: null, message: { id: userCreated.id, ...newUser } };
 };
+
+const getAll = async () => {
+    const users = await User.findAll();
+    return users;
+};
 module.exports = {
     getByEmail,
     createUser,
+    getAll,
 };
