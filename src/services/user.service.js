@@ -15,8 +15,17 @@ const getAll = async () => {
     const users = await User.findAll({ attributes: { exclude: ['password'] } });
     return users;
 };
+
+const getById = async (id) => {
+    const user = await User.findByPk(id, { attributes: { exclude: ['password'] } });
+    if (!user) {
+        return { type: 'INVALID_USER', message: 'User does not exist' };
+    }
+    return { type: null, message: user };
+};
 module.exports = {
     getByEmail,
     createUser,
     getAll,
+    getById,
 };
