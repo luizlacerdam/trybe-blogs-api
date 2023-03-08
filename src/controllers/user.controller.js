@@ -1,4 +1,5 @@
 const { UserService } = require('../services');
+const tokenGenerator = require('../utils/tokenGenerator');
 // const errorMap = require('../utils/errorMap');
 
 const createUser = async (req, res) => {
@@ -11,8 +12,9 @@ const createUser = async (req, res) => {
         const { type, message } = await UserService.createUser(newUser);
 
         if (type) return res.status(400).json({ message });
-
-        res.status(201).json(message);
+        // console.log(message.id);
+        const token = tokenGenerator({ data: { userId: message.id } });
+        res.status(201).json({ token });
     } catch (error) {
         res
       .status(500)
