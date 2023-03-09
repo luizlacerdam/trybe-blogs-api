@@ -13,6 +13,18 @@ const createCategory = async (req, res) => {
     }
 };
 
+const getAll = async (req, res) => {
+    try {
+        const categorias = await CategoryService.getAll();
+        res.status(201).json(categorias);
+    } catch (error) {
+        res
+        .status(500)
+        .json({ message: 'Erro ao recuperar categorias no banco', error: error.message });
+    }
+};
+
 module.exports = {
     createCategory,
+    getAll,
 };
