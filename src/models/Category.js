@@ -18,8 +18,5 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'categories',
             underscored: true,
         });
-    // User.associate = (models) => {
-    //     User.hasMany(models.blo)
-    // }
     return Category;
 };
