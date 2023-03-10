@@ -13,7 +13,16 @@ const getAll = async () => {
     return categories;
 };
 
+const getById = async (id) => {
+    const category = await Category.findByPk(id);
+    if (!category) {
+        return { type: 'INVALID_CATEGORY', message: 'Category does not exist' };
+    }
+    return { type: null, message: category };
+};
+
 module.exports = {
     createCategory,
     getAll,
+    getById,
 };

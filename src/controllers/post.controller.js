@@ -26,8 +26,9 @@ const getById = async (req, res) => {
 const createPost = async (req, res) => {
     try {
         const newPost = req.body;
-        const result = PostService.createPost(newPost);
-        return res.status(201).json(result);
+        const { type, message } = await PostService.createPost(newPost);
+        if (type) return res.status(404).json({ message });
+        return res.status(201).json(message);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });

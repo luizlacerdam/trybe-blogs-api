@@ -38,8 +38,12 @@ const getById = async (id) => {
 };
 
 const createPost = async (post) => {
+  if (!post.title || !post.content || !post.categoryIds) {
+    console.log('entrou');
+    return { type: 'MISSING_FIELDS', message: 'Some required fields are missing' };
+  }
   const newPostId = await BlogPost.create(post);
-  return { id: newPostId, ...post };
+  return { type: null, message: { id: newPostId, ...post } };
 };
 module.exports = {
     getAll,
