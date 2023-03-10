@@ -36,7 +36,13 @@ const getById = async (id) => {
     }
     return { type: null, message: post };
 };
+
+const createPost = async (post) => {
+  const newPostId = await BlogPost.create(post);
+  return { id: newPostId, ...post };
+};
 module.exports = {
     getAll,
     getById,
+    createPost,
 };
