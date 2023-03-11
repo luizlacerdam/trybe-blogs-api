@@ -38,8 +38,12 @@ const getById = async (id) => {
 };
 
 const createPost = async (post) => {
+  const categoryFind = await post.categoryIds.map((id) => Category.findByPk(id));
+  const isNull = categoryFind.some((category) => category === null);
+  if (isNull) {
+    return { message: 'one or more "categoryIds" not found' };
+  }
   if (!post.title || !post.content || !post.categoryIds) {
-    console.log('entrou');
     return { type: 'MISSING_FIELDS', message: 'Some required fields are missing' };
   }
   const newPostId = await BlogPost.create(post);

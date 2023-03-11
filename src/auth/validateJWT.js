@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 require('dotenv/config');
-// const { UserService } = require('../services');
+const { UserService } = require('../services');
 
 const secret = process.env.JWT_SECRET;
 
@@ -12,14 +12,14 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret);
     // console.log(req.body);
     // const user = await UserService.getByEmail(decoded.data.email);
-    
-    // if (!user) {
-    //   return res.status(401).json({ message: 'Erro ao procurar usuário do token.' });
-    // }
-    // req.user = user;
+    const user = await UserService.getById(decoded.data.userId);
+    if (!user) {
+      return res.status(401).json({ message: 'Erro ao procurar usuário do token.' });
+    }
+    req.user = user;
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Expired or invalid token' });
