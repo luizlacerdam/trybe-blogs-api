@@ -55,8 +55,23 @@ const createPost = async (newPost) => {
   .create({ postId: newPostCreated.dataValues.id, categoryId: category }));
   return { type: null, message: newPostCreated.dataValues };
 };
+
+const editPost = async (postObj) => {
+  const { postId, newPost } = postObj;
+  const getPost = await getById(postId);
+  if (postObj.userId !== getPost.message.dataValues.userId) {
+    return { type: 401, message: 'Unauthorized user' };
+  }
+  if (postObj.newPost.content === '' || postObj.newPost.title === '') {
+    return { type: 400, message: 'Some required fields are missing' };
+  }
+  await BlogPost.update({ ...newPost, updated: Date.now() }, { where: { id: postId } });
+  const postUpdated = await getById(postId);
+  return { type: null, message: postUpdated.message.dataValues };
+};
 module.exports = {
     getAll,
     getById,
     createPost,
+    editPost,
 };
