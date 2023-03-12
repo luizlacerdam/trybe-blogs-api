@@ -32,7 +32,7 @@ const getById = async (id) => {
         ],
       });
     if (!post) {
-        return { type: 'INVALID_USER', message: 'Post does not exist' };
+        return { type: 404, message: 'Post does not exist' };
     }
     return { type: null, message: post };
 };
@@ -59,6 +59,10 @@ const createPost = async (newPost) => {
 const editPost = async (postObj) => {
   const { postId, newPost } = postObj;
   const getPost = await getById(postId);
+  if (getPost.type) {
+    return getPost;
+  }
+  console.log(getPost);
   if (postObj.userId !== getPost.message.dataValues.userId) {
     return { type: 401, message: 'Unauthorized user' };
   }
@@ -69,9 +73,23 @@ const editPost = async (postObj) => {
   const postUpdated = await getById(postId);
   return { type: null, message: postUpdated.message.dataValues };
 };
+
+const deletePost = async (postObj) => {
+  const { userId, postId } = postObj;
+  const getPost = await getById(+postId);
+  if (getPost.type) {
+    return getPost;
+  }
+  if (userId !== getPost.message.dataValues.userId) {
+    return { type: 401, message: 'Unauthorized user' };
+  }
+  await BlogPost.destroy({ where: { id: postId } });
+  return { type: null };
+};
 module.exports = {
     getAll,
     getById,
     createPost,
     editPost,
+    deletePost,
 };
