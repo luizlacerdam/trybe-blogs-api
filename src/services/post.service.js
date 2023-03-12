@@ -1,4 +1,4 @@
-const { BlogPost, User, Category } = require('../models');
+const { BlogPost, User, Category, PostCategory } = require('../models');
 
 const getAll = async () => {
     const posts = await BlogPost.findAll({
@@ -37,17 +37,23 @@ const getById = async (id) => {
     return { type: null, message: post };
 };
 
-const createPost = async (post) => {
-  const categoryFind = await post.categoryIds.map((id) => Category.findByPk(id));
+const createPost = async (newPost) => {
+  const { id, post } = newPost;
+  const categoryFind = await Promise.all(
+    post.categoryIds.map((categoryId) => Category.findByPk(categoryId)),
+);
   const isNull = categoryFind.some((category) => category === null);
   if (isNull) {
-    return { message: 'one or more "categoryIds" not found' };
+    return { type: 'MISSING_CATEGORY', message: 'one or more "categoryIds" not found' };
   }
   if (!post.title || !post.content || !post.categoryIds) {
     return { type: 'MISSING_FIELDS', message: 'Some required fields are missing' };
   }
-  const newPostId = await BlogPost.create(post);
-  return { type: null, message: { id: newPostId, ...post } };
+  const newPostObject = { userId: id, ...post };
+  const newPostCreated = await BlogPost.create(newPostObject);
+  await post.categoryIds.map((category) => PostCategory
+  .create({ postId: newPostCreated.dataValues.id, categoryId: category }));
+  return { type: null, message: newPostCreated.dataValues };
 };
 module.exports = {
     getAll,
